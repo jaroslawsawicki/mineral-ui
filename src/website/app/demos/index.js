@@ -30,6 +30,7 @@ import radio from './Radio';
 import textArea from './TextArea';
 import textInput from './TextInput';
 import themeProvider from './ThemeProvider';
+import tooltip from './Tooltip';
 
 const demos = flatten([
   avatar,
@@ -44,7 +45,8 @@ const demos = flatten([
   radio,
   textArea,
   textInput,
-  themeProvider
+  themeProvider,
+  tooltip
 ]);
 
 export default createKeyMap(demos, 'slug');

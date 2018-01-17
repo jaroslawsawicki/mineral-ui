@@ -168,5 +168,11 @@ export default {
       'ThemeProvider applies styles to a section of your app. Nesting enables multiple themes.',
     slug: 'theme-provider',
     title: 'ThemeProvider'
+  },
+  tooltip: {
+    description:
+    'Tooltips display supporting content when your user interacts with an associated trigger. Use Tooltips to implement other custom behaviors or widgets.',
+    slug: 'tooltip',
+    title: 'Tooltip'
   }
 };
