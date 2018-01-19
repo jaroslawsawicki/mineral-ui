@@ -31,11 +31,15 @@ import siteColors from './siteColors';
 import sections from './pages';
 
 type Props = {
-  demoRoutes: { [string]: DemoRoute },
+  demoRoutes: Array<DemoRoute>,
   wide?: Boolean
 };
 
-type DemoRoute = { slug: string, title: string };
+type DemoRoute = {
+  description: string,
+  slug: string,
+  title: string
+};
 
 const navTheme = {
   Heading_color_4: mineralTheme.color_gray_30,

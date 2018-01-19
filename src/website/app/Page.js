@@ -42,7 +42,7 @@ import { heroTheme } from './pages/Home/index';
 type Props = {
   children: React$Node,
   chromeless?: boolean,
-  demoRoutes?: { [string]: DemoRoute },
+  demoRoutes?: Array<DemoRoute>,
   headerContent?: React$Node,
   pageMeta?: {
     canonicalLink?: string,
@@ -52,7 +52,11 @@ type Props = {
   type?: number
 };
 
-type DemoRoute = { slug: string, title: string, description: string };
+type DemoRoute = {
+  description: string,
+  slug: string,
+  title: string
+};
 
 type State = {
   isNavOpen: boolean
