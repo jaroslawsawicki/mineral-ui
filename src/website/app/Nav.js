@@ -31,6 +31,7 @@ import siteColors from './siteColors';
 import sections from './pages';
 
 type Props = {
+  currentDemo?: string,
   demoRoutes: Array<DemoRoute>,
   wide?: Boolean
 };
@@ -66,10 +67,12 @@ const styles = {
     paddingRight: wide ? getNormalizedValue(pxToEm(8), theme.fontSize_h4) : null
   }),
   link: ({ theme, wide }) => {
+    const fontSize = theme.fontSize_ui;
+
     let styles = {
       display: 'block',
       fontWeight: theme.fontWeight_regular,
-      // top & bottom: results of `getNormalizedValue(pxToEm(5), theme.fontSize_ui)`
+      // top & bottom: results of `getNormalizedValue(pxToEm(5), fontSize)`
       // (6px for bottom), rounded down for baseline alignment
       padding: '0.35em 0 0.4em',
       textDecoration: 'none'
@@ -78,8 +81,8 @@ const styles = {
     if (wide) {
       styles = {
         ...styles,
-        paddingLeft: getNormalizedValue(pxToEm(8), theme.fontSize_ui),
-        paddingRight: getNormalizedValue(pxToEm(8), theme.fontSize_ui),
+        paddingLeft: getNormalizedValue(pxToEm(8), fontSize),
+        paddingRight: getNormalizedValue(pxToEm(8), fontSize),
 
         '&.active': {
           backgroundColor: rgba(theme.color_text_primary, 0.15),
@@ -91,9 +94,9 @@ const styles = {
             bottom: 0,
             content: '""',
             position: 'absolute',
-            right: `-${pxToEm(3)}`,
+            right: `-${getNormalizedValue(pxToEm(3), fontSize)}`,
             top: 0,
-            width: pxToEm(3)
+            width: getNormalizedValue(pxToEm(3), fontSize)
           }
         }
       };
@@ -107,12 +110,12 @@ const styles = {
 
           '&::before': {
             backgroundColor: theme.navLink_color_active_narrow,
-            bottom: 2,
+            bottom: 0,
             content: '""',
-            left: `-${pxToEm(18)}`,
+            left: `-${getNormalizedValue(pxToEm(18), fontSize)}`,
             position: 'absolute',
-            top: 2,
-            width: pxToEm(6)
+            top: 0,
+            width: getNormalizedValue(pxToEm(6), fontSize)
           }
         }
       };
@@ -133,9 +136,12 @@ const styles = {
     }
   }),
   // [1] to align first SectionHeading with baseline of third intro line
-  logoHeading: {
+  logoHeading: ({ theme, wide }) => ({
     fontSize: '1em',
     margin: `0 0 ${pxToEm(9)}`, // [1]
+    paddingRight: wide
+      ? getNormalizedValue(pxToEm(8), theme.fontSize_h4)
+      : null,
 
     '& svg': {
       width: 29, // 36px tall is the important dimension
@@ -144,6 +150,44 @@ const styles = {
       '& .band-2': { fill: siteColors.orange },
       '& .band-3': { fill: siteColors.slate }
     }
+  }),
+  subList: ({ open, theme, wide }) => {
+    const styles = {
+      listStyle: 'none',
+      margin: 0,
+      padding: 0,
+      position: 'relative'
+    };
+
+    return open
+      ? wide
+        ? {
+            ...styles,
+
+            '&::before': {
+              backgroundColor: rgba(theme.color_text_primary, 0.25),
+              bottom: 0,
+              content: '""',
+              position: 'absolute',
+              right: `-${getNormalizedValue(pxToEm(3), theme.fontSize_ui)}`,
+              top: 0,
+              width: getNormalizedValue(pxToEm(3), theme.fontSize_ui)
+            }
+          }
+        : {
+            ...styles,
+
+            '&::before': {
+              backgroundColor: rgba(theme.color_text_primary, 0.5),
+              bottom: 0,
+              content: '""',
+              left: `-${pxToEm(18)}`,
+              position: 'absolute',
+              top: 0,
+              width: pxToEm(6)
+            }
+          }
+      : styles;
   }
 };
 
@@ -161,6 +205,7 @@ const SectionHeading = createStyledComponent(
   as: 'h2',
   level: 4
 });
+const SubList = createStyledComponent('ol', styles.subList);
 const LogoHeading = createStyledComponent(
   Heading,
   styles.logoHeading
@@ -168,8 +213,8 @@ const LogoHeading = createStyledComponent(
   level: 1
 });
 
-const Logo = () => (
-  <LogoHeading>
+const Logo = wide => (
+  <LogoHeading wide={wide}>
     <Link exact to="/">
       <_Logo />
     </Link>
@@ -199,26 +244,55 @@ const pages = wide => {
   });
 };
 
-export default function Nav({ demoRoutes, wide, ...restProps }: Props) {
+export default function Nav({
+  currentDemo,
+  demoRoutes,
+  wide,
+  ...restProps
+}: Props) {
   const rootProps = { ...restProps };
 
-  const demoLinks = Object.keys(demoRoutes).map(slug => {
-    const demo = demoRoutes[slug];
-    return (
-      <ListItem key={slug}>
-        <Link to={`/components/${slug}`} wide={wide}>
-          {demo.title}
-        </Link>
-      </ListItem>
-    );
+  const demoLinks = demoRoutes.map(route => {
+    if (Array.isArray(route)) {
+      const open = route.filter(subRoute => subRoute.title === currentDemo)
+        .length;
+      const subListProps = {
+        key: route[0].slug,
+        open,
+        wide
+      };
+      return (
+        <SubList {...subListProps}>
+          {route.map((subRoute, index) => {
+            const { slug, title } = subRoute;
+            return index === 0 || open ? (
+              <ListItem key={slug}>
+                <Link to={`/components/${slug}`} wide={wide}>
+                  {title}
+                </Link>
+              </ListItem>
+            ) : null;
+          })}
+        </SubList>
+      );
+    } else {
+      const { slug, title } = route;
+      return (
+        <ListItem key={slug}>
+          <Link to={`/components/${slug}`} wide={wide}>
+            {title}
+          </Link>
+        </ListItem>
+      );
+    }
   });
 
   return (
     <ThemeProvider theme={wide ? navThemeWide : navTheme}>
       <nav {...rootProps}>
-        <Logo />
+        <Logo wide={wide} />
         {pages(wide)}
-        <SectionHeading>Components</SectionHeading>
+        <SectionHeading wide={wide}>Components</SectionHeading>
         <List>{demoLinks}</List>
       </nav>
     </ThemeProvider>

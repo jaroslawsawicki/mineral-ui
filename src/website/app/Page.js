@@ -400,6 +400,10 @@ export default class Page extends Component<Props, State> {
       isNavOpen,
       tabIndex: isNavOpen ? '-1' : undefined
     };
+    const navProps = {
+      currentDemo: pageMeta && pageMeta.title && pageMeta.title.split(' ')[0],
+      demoRoutes
+    };
 
     const helmetItems = pageMeta && (
       <Helmet>
@@ -428,7 +432,7 @@ export default class Page extends Component<Props, State> {
                   inDialog
                   onClick={this.close.bind(this)}
                 />
-                <Nav demoRoutes={demoRoutes} />
+                <Nav {...navProps} />
               </Dialog>
             </div>
           );
@@ -476,7 +480,7 @@ export default class Page extends Component<Props, State> {
                       </Header>
                     </ThemeProvider>
                   )}
-                  {moreSpacious && <Nav demoRoutes={demoRoutes} wide />}
+                  {moreSpacious && <Nav {...navProps} wide />}
                   <Content>{children}</Content>
                 </WrapInner>
                 <Footer />
