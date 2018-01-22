@@ -22,6 +22,7 @@ import button from './Button';
 import card from './Card';
 import dropdown from './Dropdown';
 import form from './Form';
+import grid from './Grid';
 import icon from './Icon';
 import link from './Link';
 import menu from './Menu';
@@ -37,6 +38,7 @@ const demos = flatten([
   card,
   dropdown,
   form,
+  grid,
   icon,
   link,
   menu,

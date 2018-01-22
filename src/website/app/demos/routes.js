@@ -98,6 +98,11 @@ export default {
     slug: 'form-field-divider',
     title: 'FormFieldDivider'
   },
+  column: {
+    description: 'TODO',
+    slug: 'column',
+    title: 'Column'
+  },
   icon: {
     description:
       'Icons symbolize actions and objects in your interface. Use icons in combination with labels to help users more quickly process your UI.',
@@ -150,6 +155,11 @@ export default {
       'RadioGroup allows users to select a single option from a set.  Use a RadioGroup for a simpler API than working with Radios directly.',
     slug: 'radio-group',
     title: 'RadioGroup'
+  },
+  row: {
+    description: 'TODO',
+    slug: 'row',
+    title: 'Row'
   },
   'text-area': {
     description:
